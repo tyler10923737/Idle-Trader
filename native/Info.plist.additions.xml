@@ -1,0 +1,14 @@
+<!-- Paste these keys inside the top-level <dict> of ios/App/App/Info.plist (Xcode: right-click Info.plist → Open As → Source Code).
+     Replace the AdMob App ID with yours (AdMob → Apps → your iOS app → App ID, format ca-app-pub-XXXXXXXXXXXXXXXX~YYYYYYYYYY). -->
+<key>GADApplicationIdentifier</key>
+<string>ca-app-pub-3940256099942544~1458002511</string> <!-- Google's TEST app id; replace before release -->
+<key>NSUserTrackingUsageDescription</key>
+<string>This lets us show ads that are more relevant to you. The game stays free either way.</string>
+<!-- SKAdNetwork ids let ad networks measure installs without tracking. Copy the current list from
+     https://developers.google.com/admob/ios/ios14#skadnetwork and paste it here as:
+<key>SKAdNetworkItems</key>
+<array>
+  <dict><key>SKAdNetworkIdentifier</key><string>cstr6suwn9.skadnetwork</string></dict>
+  ... (the rest of Google's list)
+</array>
+-->

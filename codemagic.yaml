@@ -1,0 +1,89 @@
+# Codemagic cloud builds for Idle Trader — no Mac needed. codemagic.io (free tier: 500 build minutes/month).
+# Setup in the Codemagic UI, once:
+#   1. Add this repository (GitHub/GitLab/Bitbucket).
+#   2. Team settings → Integrations → Developer Portal: add an App Store Connect API key (name it "Idle Trader API key").
+#   3. Environment variables → group "app_store": APP_STORE_APPLE_ID = the app's numeric Apple ID (App Store Connect → App information).
+#   4. Code signing identities → Android keystores: upload (or generate) a keystore named "idle_trader_keystore".
+#   5. Environment variables → group "google_play": GCLOUD_SERVICE_ACCOUNT_CREDENTIALS = the Play Console service-account JSON.
+# Then press "Start new build", choose a workflow. iOS builds land in TestFlight; Android builds on the Play internal track.
+workflows:
+  ios-release:
+    name: iOS → TestFlight / App Store
+    instance_type: mac_mini_m2
+    max_build_duration: 60
+    integrations:
+      app_store_connect: Idle Trader API key
+    environment:
+      groups:
+        - app_store
+      vars:
+        BUNDLE_ID: "com.idletrader.app"          # keep in sync with capacitor.config.json
+        XCODE_WORKSPACE: "ios/App/App.xcworkspace"
+        XCODE_SCHEME: "App"
+      node: 20
+      xcode: latest
+      cocoapods: default
+    scripts:
+      - name: Install dependencies
+        script: npm install
+      - name: Create the iOS project and sync the web app
+        script: |
+          [ -d ios ] || npx cap add ios
+          npx cap sync ios
+          node tools/apply-native-config.js
+      - name: Icons and splash screens
+        script: npx @capacitor/assets generate --ios --iconBackgroundColor '#1b2a7a' --splashBackgroundColor '#1b2a7a' || true
+      - name: Code signing (certificates and profiles are created automatically from the API key)
+        script: |
+          keychain initialize
+          app-store-connect fetch-signing-files "$BUNDLE_ID" --type IOS_APP_STORE --create
+          keychain add-certificates
+          xcode-project use-profiles
+      - name: Build number
+        script: |
+          cd ios/App
+          agvtool new-version -all "$BUILD_NUMBER"
+          agvtool new-marketing-version "$(node -p "require('../../package.json').version")"
+      - name: Build the .ipa
+        script: xcode-project build-ipa --workspace "$XCODE_WORKSPACE" --scheme "$XCODE_SCHEME"
+    artifacts:
+      - build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
+    publishing:
+      app_store_connect:
+        auth: integration
+        submit_to_testflight: true
+        # submit_to_app_store: true   # uncomment to also submit for App Store review automatically
+
+  android-release:
+    name: Android → Google Play (internal track)
+    instance_type: linux_x2
+    max_build_duration: 60
+    environment:
+      android_signing:
+        - idle_trader_keystore
+      groups:
+        - google_play
+      node: 20
+      java: 17
+    scripts:
+      - name: Install dependencies
+        script: npm install
+      - name: Create the Android project and sync the web app
+        script: |
+          [ -d android ] || npx cap add android
+          npx cap sync android
+          node tools/apply-native-config.js
+      - name: Icons and splash screens
+        script: npx @capacitor/assets generate --android --iconBackgroundColor '#1b2a7a' --splashBackgroundColor '#1b2a7a' || true
+      - name: Build the signed .aab
+        script: |
+          cd android
+          chmod +x gradlew
+          ./gradlew bundleRelease
+    artifacts:
+      - android/app/build/outputs/**/*.aab
+    publishing:
+      google_play:
+        credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
+        track: internal

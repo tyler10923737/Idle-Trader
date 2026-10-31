@@ -1,0 +1,30 @@
+{
+  "appId": "com.idletrader.app",
+  "appName": "Idle Trader",
+  "webDir": "www",
+  "bundledWebRuntime": false,
+  "backgroundColor": "#1b2a7a",
+  "ios": {
+    "contentInset": "never",
+    "backgroundColor": "#1b2a7a",
+    "preferredContentMode": "mobile"
+  },
+  "android": {
+    "backgroundColor": "#1b2a7a",
+    "allowMixedContent": false
+  },
+  "server": {
+    "androidScheme": "https"
+  },
+  "plugins": {
+    "LocalNotifications": {
+      "smallIcon": "ic_stat_icon",
+      "iconColor": "#ffc43d"
+    },
+    "SplashScreen": {
+      "launchShowDuration": 1200,
+      "backgroundColor": "#1b2a7a",
+      "showSpinner": false
+    }
+  }
+}

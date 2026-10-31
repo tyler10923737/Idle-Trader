@@ -1,0 +1,6 @@
+{
+  "_comment": "Values injected into the native projects by tools/apply-native-config.js (run automatically in codemagic.yaml). Replace the Google TEST app ids with yours before release.",
+  "admobAppIdIos": "ca-app-pub-3940256099942544~1458002511",
+  "admobAppIdAndroid": "ca-app-pub-3940256099942544~3347511713",
+  "trackingDescription": "This lets us show ads that are more relevant to you. The game stays free either way."
+}

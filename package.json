@@ -1,0 +1,38 @@
+{
+  "name": "idle-trader",
+  "version": "2.4.0",
+  "private": true,
+  "description": "Idle Trader \u2014 a colorful mobile tycoon game (web app, packaged for iOS/Android with Capacitor)",
+  "scripts": {
+    "start": "python3 -m http.server 8000 --directory www",
+    "start:win": "py -m http.server 8000 --directory www",
+    "serve": "npx --yes serve www -l 8000",
+    "test": "python3 tools/smoke-test.py http://127.0.0.1:8000/",
+    "cap:init": "npx cap init \"Idle Trader\" com.idletrader.app --web-dir www",
+    "cap:ios": "npx cap add ios && npx cap sync ios && npx cap open ios",
+    "cap:android": "npx cap add android && npx cap sync android && npx cap open android",
+    "cap:sync": "npx cap sync",
+    "cap:plugins": "npm install",
+    "cap:assets": "npx --yes @capacitor/assets generate --iconBackgroundColor '#1b2a7a' --splashBackgroundColor '#1b2a7a'",
+    "ad:render": "python3 tools/ad/render-ad.py http://127.0.0.1:8000/tools/ad/ad.html ad-out",
+    "native:config": "node tools/apply-native-config.js"
+  },
+  "dependencies": {
+    "@capacitor/core": "^8.5.3",
+    "@capacitor/cli": "^8.5.3",
+    "@capacitor/ios": "^8.5.3",
+    "@capacitor/android": "^8.5.3",
+    "@capacitor/app": "^8.1.2",
+    "@capacitor/browser": "^8.0.5",
+    "@capacitor/haptics": "^8.0.2",
+    "@capacitor/local-notifications": "^8.3.1",
+    "@capacitor/share": "^8.0.3",
+    "@capacitor/splash-screen": "^8.0.2",
+    "@capacitor-community/admob": "^8.2.1",
+    "@capacitor-community/in-app-review": "^8.0.0",
+    "@revenuecat/purchases-capacitor": "^13.7.6"
+  },
+  "devDependencies": {
+    "@capacitor/assets": "^3.0.5"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "name": "Idle Trader",
+  "short_name": "Idle Trader",
+  "description": "A colorful tycoon game: trade, upgrade your office, collect cars, homes and businesses.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#1b2a7a",
+  "theme_color": "#1b2a7a",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}
