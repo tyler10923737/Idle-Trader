@@ -1,0 +1,28 @@
+name: Import project from release zip
+on:
+  workflow_dispatch:
+  release:
+    types: [published]
+permissions:
+  contents: write
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download the zip attached to the latest release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release download --repo "${{ github.repository }}" --pattern "*.zip" --output project.zip
+      - name: Unpack into the repository
+        run: |
+          unzip -oq project.zip -d _import
+          if [ "$(find _import -mindepth 1 -maxdepth 1 | wc -l)" = "1" ]; then cp -R _import/*/. .; else cp -R _import/. .; fi
+          rm -rf _import project.zip
+      - name: Commit and push
+        run: |
+          git config user.name "Idle Trader import"
+          git config user.email "import@users.noreply.github.com"
+          git add -A
+          git commit -m "Import Idle Trader project" || echo "nothing to commit"
+          git push
